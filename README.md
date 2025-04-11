@@ -62,6 +62,11 @@ make deploy/backend
 make deploy/infra
 ```
 
+- For destruction, you can do the following:
+```bash
+make destroy/infra
+```
+
 ## If you want a more engaging way, do the following:**
 
 2. Configure the Remote Backend
