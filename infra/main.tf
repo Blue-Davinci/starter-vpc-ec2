@@ -48,3 +48,34 @@ resource "aws_subnet" "starter-vpc-ec2-private-subnet" {
     # we won't assign public IPs to the instances in this subnet
     # so we don't need to set map_public_ip_on_launch to true
 }
+
+# Create the route table for the public subnet, hooking it to the IGW we created above
+resource "aws_route_table" "starter-vpc-ec2-public-rt" {
+    vpc_id = aws_vpc.starter-vpc-ec2.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.starter-vpc-ec2-igw.id
+    }
+    tags =  merge(var.tags,{Name = "starter-vpc-ec2-public-rt"})
+}
+
+# Create private route table
+resource "aws_route_table" "starter-vpc-ec2-private-rt" {
+    vpc_id = aws_vpc.starter-vpc-ec2.id
+    tags = merge(var.tags, {Name = "starter-vpc-ec2-private-rt"})
+    # No routes needed for private subnets, they will use the default route table
+}
+
+# Create route associations for the public subnets
+resource "aws_route_table_association" "starter-vpc-ec2-public-rt-assoc" {
+    count = length(aws_subnet.starter-vpc-ec2-public-subnet)
+    subnet_id = aws_subnet.starter-vpc-ec2-public-subnet[count.index].id
+    route_table_id = aws_route_table.starter-vpc-ec2-public-rt.id
+}
+
+# Create route associations for the private subnets
+resource "aws_route_table_association" "starter-vpc-ec2-private-rt-assoc" {
+    count = length(aws_subnet.starter-vpc-ec2-private-subnet)
+    subnet_id = aws_subnet.starter-vpc-ec2-private-subnet[count.index].id
+    route_table_id = aws_route_table.starter-vpc-ec2-private-rt.id
+}
