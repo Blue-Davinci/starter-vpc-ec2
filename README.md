@@ -14,7 +14,7 @@ This project creates a basic AWS VPC infrastructure using Terraform. It includes
 
 ## 📁 Project Architecture
 
-![Project Architecture](https://i.ibb.co/ccwzcH6R/Blank-diagram.png)
+![Project Architecture](images/diagram.png)
 
 ## Project Structure
 ```bash
@@ -62,6 +62,7 @@ make deploy/backend
 make deploy/infra
 ```
 
+**If you want a more engaging way, do the following:**
 2. Configure the Remote Backend
 
 Go into the backend folder to initialize and apply the backend configuration (S3 + DynamoDB):
