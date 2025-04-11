@@ -4,15 +4,13 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Usage](#usage)
-- [Contributing](../CONTRIBUTING.md)
+- [Cleanup](#cleanup)
+- [Best Practices](#best_practices)
 
 ## About <a name = "about"></a>
 This repository contains two distinct implementations of AWS infrastructure using Terraform:
 1. **Non-modularized** - A straightforward, all-in-one configuration
 2. **Modularized** - A reusable, environment-aware architecture
-
-![Project Architecture](images/diagram.png)
 
 
 ## � Implementation Comparison
@@ -25,7 +23,6 @@ This repository contains two distinct implementations of AWS infrastructure usin
 | Complexity           | Beginner-friendly        | Intermediate/Advanced     |
 | Best For             | Quick proofs-of-concept  | Production-grade setups   |
 
-## 🚀 Getting Started
 
 ### Prerequisites
 - Terraform v1.11.0+
@@ -47,8 +44,7 @@ make deploy/backend  # Set up remote backend
 make deploy/modularized ENV=development  # Deploy to dev environment
 ```
 
-## Getting Started <a name = "getting_started"></a>
-
+## 🚀 Getting Started <a name="getting_started">
 1. Non-Modularized Implementation
     - Simple VPC with EC2 instance
     - Basic remote backend setup
@@ -73,7 +69,7 @@ make deploy/modularized ENV=<env>  # Modularized deploy
 make destroy/<target>   # Destroy infrastructure
 ```
 
-## 🛑 Cleanup
+## 🛑 Cleanup <a name="cleanup">
 Always destroy resources when finished:
 ```bash
 # Non-modularized
@@ -85,7 +81,7 @@ make destroy/modularized ENV=development
 make destroy/backend
 ```
 
-## 💡 Best Practices
+## 💡 Best Practices <a name="best_practices">
 
 1. Use terraform fmt to maintain consistent formatting
 2. Regularly run terraform validate

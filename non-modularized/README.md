@@ -19,9 +19,6 @@ This project creates a modular AWS infrastructure using Terraform, allowing for 
 
 <br>
 
-## 📁 Project Architecture
-
-![Project Architecture](images/diagram.png)
 
 ## Project Structure
 ```bash
