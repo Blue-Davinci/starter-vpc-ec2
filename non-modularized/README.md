@@ -1,16 +1,23 @@
-# Terraform VPC with EC2 and Apache (Non-Modular Setup)
+# Terraform VPC with EC2 - Modular Infrastructure
 
-This project creates a basic AWS VPC infrastructure using Terraform. It includes:
+This project creates a modular AWS infrastructure using Terraform, allowing for environment-specific deployments (development, production, etc.). The architecture follows Terraform best practices with clear separation of components.
 
-- A VPC
-- Two public and two private subnets (in different AZs)
-- An Internet Gateway
-- Route table for the subnets
-- Security groups
-- A t2.micro EC2 instance with Apache preinstalled (via user-data script)
-- Remote backend using an s3 bucket with the latest locking feauture.
+## 🌟 Key Features
+- **Environment Isolation**: Separate configurations for development/production
+- **Modular Design**: Reusable components for network and compute
+- **Makefile Automation**: Simplified deployment workflows
+- **Remote State Management**: Secure state storage with S3 backend
+- **Infrastructure as Code**: Fully reproducible AWS resources
 
----
+
+## 🌟 Key Features
+- **Environment Isolation**: Separate configurations for development/production
+- **Modular Design**: Reusable components for network and compute
+- **Makefile Automation**: Simplified deployment workflows
+- **Remote State Management**: Secure state storage with S3 backend
+- **Infrastructure as Code**: Fully reproducible AWS resources
+
+<br>
 
 ## 📁 Project Architecture
 
@@ -40,71 +47,129 @@ This project creates a basic AWS VPC infrastructure using Terraform. It includes
 
 ```
 
-## Commands to Deploy
-1. Clone the repo
+
+## 🚀 Deployment Workflows
+
+### Prerequisites
+- Terraform v1.0+
+- AWS CLI configured
+- Make (for simplified commands)
+
+### 🔧 Initial Setup
+1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/terraform-vpc-project.git
-cd terraform-vpc-project
+git clone https://github.com/Blue-Davinci/starter-vpc-ec2
+cd starter-vpc-ec2
 ```
 
-## Quick and fast way:
-The quickest way to do this will be to use the `makefile` as follows:
-- To get possible commands
-```bash
-make help
-```
-- Run backend infra first
+2. Bootstrap the remote backend (S3 + DynamoDB):
 ```bash
 make deploy/backend
 ```
-- Then deploy the infra:
+
+## 🏗 Environment Deployment
+
+**Using Makefile (Recommended)**
 ```bash
-make deploy/infra
+# Show available commands
+make help
+
+# Deploy to development environment
+make deploy/modularized ENV=development
+
+# Deploy to production environment
+make deploy/modularized ENV=production
+
+# Destroy development environment
+make destroy/modularized ENV=development
+```
+**Manual Deployment**
+
+1. Navigate to your target environment:
+```bash
+cd environment/<ENV_NAME>
 ```
 
-- For destruction, you can do the following:
-```bash
-make destroy/infra
-```
-
-## If you want a more engaging way, do the following:**
-
-2. Configure the Remote Backend
-
-Go into the backend folder to initialize and apply the backend configuration (S3 + DynamoDB):
-```bash
-cd backend
-terraform init
-terraform plan
-terraform apply
-```
-_✅ This creates the required remote backend infrastructure for storing Terraform state safely in S3 without the usage or locking via DynamoDB._
-
-3. Deploy the VPC and EC2 Infrastructure
-
-Return to the main project folder (or infra/ if structured that way):
-```bash
-cd ../infra
-```
-Then initialize Terraform using the now-configured remote backend:
+2. Initialize Terraform:
 ```bash
 terraform init
 ```
-
-Preview the execution plan:
+    
+3. Review and apply:
 ```bash
-terraform plan -out="infra.plan"
-```
-_You can also perform the plan without piping the output_
-
-Apply the configuration:
-```bash
+terraform plan -out "infra.plan"
 terraform apply "infra.plan"
 ```
-_You can also just run without referencing the plan file with auto-approve like so: `terraform apply -auto-approve`_
 
-## Destroying
-Don't forget to destroy the resources when you are done:
+## 🧹 Cleanup
 ```bash
+# Destroy specific environment
+make destroy/modularized ENV=development
+
+# Destroy backend infrastructure (after all environments are destroyed)
+cd bootstrap
 terraform destroy
 ```
+
+## 🧩 Module Structure
+1. Network Module
+
+    - VPC with public/private subnets
+
+    - Internet Gateway
+
+    - Route tables
+
+    - NAT Gateway **(optional, in next update of the series)**
+
+    - Security Groups
+
+2. Compute Module
+
+    - EC2 instances
+
+    - Auto Scaling Groups  **(optional, in next update of the series)**
+
+    - Load Balancers  **(optional, in next update of the series)**
+
+    - Route 53  **(optional, in next update of the series)**
+
+    - User-data scripts
+
+## 🔄 Workflow Diagram
+```bash
+graph TD
+A[Make Command] --> B[Select Environment]
+B --> C[Initialize Backend]
+C --> D[Deploy Modules]
+D --> E[Network Components]
+D --> F[Compute Components]
+```
+
+## 🛠 Makefile Reference
+| Command                               | Description                        |
+|---------------------------------------|------------------------------------|
+| `make help`                           | Show available commands            |
+| `make deploy/backend`                 | Deploy S3/DynamoDB backend         |
+| `make deploy/modularized ENV=<env>`   | Deploy to specified environment    |
+| `make destroy/modularized ENV=<env>`  | Destroy specified environment      |
+
+## 🔒 Security Notes
+
+1. Always review Terraform plans before applying
+
+2. Production environment should have additional safeguards
+
+3. Consider adding state encryption for sensitive data
+
+## 📝 Best Practices
+
+1. Version Control: Always commit your Terraform files
+
+2. State Management: Never modify state files manually
+
+3. Variables: Use variables for environment-specific values
+
+4. Modules: Keep modules focused and reusable
+
+5. Documentation: Update README when making changes
