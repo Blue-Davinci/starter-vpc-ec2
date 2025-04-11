@@ -62,7 +62,8 @@ make deploy/backend
 make deploy/infra
 ```
 
-**If you want a more engaging way, do the following:**
+## If you want a more engaging way, do the following:**
+
 2. Configure the Remote Backend
 
 Go into the backend folder to initialize and apply the backend configuration (S3 + DynamoDB):
