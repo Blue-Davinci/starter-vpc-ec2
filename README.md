@@ -56,6 +56,7 @@ make deploy/modularized ENV=development  # Deploy to dev environment
     - Environment-aware architecture
     - Reusable network/compute modules
     - Isolated state per environment
+    - **Added ALB and NAT gateway including scalability.**
 
 ## 🛠 Makefile Support
 
@@ -97,6 +98,6 @@ make destroy/backend
 
     - Authentication Errors: Verify AWS credentials
 
-    - State Locking: Check DynamoDB tables if operations hang
+    - ~~State Locking: Check DynamoDB tables if operations hang~~ 
  
     - Provider Issues: Run terraform init -upgrade

@@ -1,6 +1,7 @@
 # Terraform VPC with EC2 and Apache (Non-Modular Setup)
 
-This project creates a basic AWS VPC infrastructure using Terraform. It includes:
+This project Forms the Basis of my Tutorial on using Terraform With AWS. 
+Initially, we aimed to create a basic AWS VPC infrastructure using Terraform which included:
 
 - A VPC
 - Two public and two private subnets (in different AZs)
@@ -11,47 +12,106 @@ This project creates a basic AWS VPC infrastructure using Terraform. It includes
 - Remote backend using an s3 bucket with the latest locking feauture.
 
 ---
+In the <b>UPDATED MODULAR VERSION</b>, we have now also included the following:
+- Made the EC2's scalable and pushed them to private subnets
+- Added a Load balancer supporting the above change
+- Added a NAT gateway supporting the scalable EC2 instances
+
+The following will come as we grow the Tutorial Project:
+- Route 53 integration
+- A 3 tier application extending to an RDS instance
+- EKS/ECS usage and integration
+
+## Expected Output
+![Expected Output](/images/ec2%201.png)
+
+![Expected Output](/images/ec2%202.png)
 
 
 ## Project Structure
 ```bash
+│   .gitignore
+│   makefile
 │   README.md
-│   versions.tf
 │
-├───bootstrap
-│   │   .terraform.lock.hcl
-│   │   main.tf
-│   │   outputs.tf
-│   │   variables.tf
-│   │
-│   └───.terraform
+├───.vscode
+│       settings.json
 │
-├───environment
-│   │   terraform.tfstate
+├───images
+│       diagram.png
+│
+├───modularized
+│   │   README.md
+│   │   versions.tf
 │   │
-│   ├───development
+│   ├───bootstrap
 │   │   │   .terraform.lock.hcl
-│   │   │   backend.tf
-│   │   │   infra.plan
 │   │   │   main.tf
 │   │   │   outputs.tf
 │   │   │   variables.tf
 │   │   │
 │   │   └───.terraform
 │   │
-│   └───production
-│           output.tf
+│   ├───environment
+│   │   │   terraform.tfstate
+│   │   │
+│   │   ├───development
+│   │   │   │   .terraform.lock.hcl
+│   │   │   │   backend.tf
+│   │   │   │   infra.plan
+│   │   │   │   main.tf
+│   │   │   │   outputs.tf
+│   │   │   │   variables.tf
+│   │   │   │
+│   │   │   └───.terraform 
+│   │   │
+│   │   └───production
+│   │           output.tf
+│   │
+│   └───modules
+│       ├───alb
+│       │       main.tf
+│       │       outputs.tf
+│       │       variables.tf
+│       │
+│       ├───compute
+│       │       main.tf
+│       │       outputs.tf
+│       │       variables.tf
+│       │
+│       ├───nat_gateway
+│       │       main.tf
+│       │       outputs.tf
+│       │       variables.tf
+│       │
+│       └───network
+│               main.tf
+│               outputs.tf
+│               variables.tf
 │
-└───modules
-    ├───compute
-    │       main.tf
-    │       outputs.tf
-    │       variables.tf
+└───non-modularized
+    │   README.md
     │
-    └───network
-            main.tf
-            outputs.tf
-            variables.tf
+    ├───backend
+    │   │   .terraform.lock.hcl
+    │   │   backend.plan
+    │   │   main.tf
+    │   │   outputs.tf
+    │   │   providers.tf
+    │   │   terraform.tfstate
+    │   │   variables.tf
+    │   │
+    │   └───.terraform
+    │
+    └───infra
+        │   .terraform.lock.hcl
+        │   infra.plan
+        │   main.tf
+        │   outputs.tf
+        │   providers.tf
+        │   variables.tf
+        │
+        └───.terraform
 
 ```
 
