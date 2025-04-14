@@ -25,3 +25,9 @@ variable "aws_availability_zones" {
   description = "The availability zones to use for the subnets"
   type        = list(string)
 }
+
+# NAT Gateway IDs
+variable "nat_gateway_ids" {
+  description = "The IDs of the NAT Gateways to use for the private subnets"
+  type        = list(string)
+}

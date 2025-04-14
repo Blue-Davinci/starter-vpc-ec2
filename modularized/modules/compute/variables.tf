@@ -30,9 +30,9 @@ variable "instance_type" {
 }
 
 # EC2 subnet
-variable "private_subnet_id" {
-  description = "The ID of the subnet to launch the instance in"
-  type        = string
+variable "private_subnet_ids" {
+  description = "A list of the private subnet IDs to launch the instance in"
+  type        = list(string)
 } 
 
 # EC2 ami

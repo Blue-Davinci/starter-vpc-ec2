@@ -9,3 +9,9 @@ output "target_group_arn" {
   value = aws_lb_target_group.starter-vpc-ec2-tg.arn
   description = "The ARN of the target group"
 }
+
+# Output the ALB DNS name
+output "alb_dns_name" {
+  value = aws_lb.starter-vpc-ec2-alb.dns_name
+  description = "The DNS name of the ALB"
+}

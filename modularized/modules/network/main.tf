@@ -48,9 +48,15 @@ resource "aws_route_table" "starter-vpc-ec2-public-rt" {
 
 # Create private route table
 resource "aws_route_table" "starter-vpc-ec2-private-rt" {
+  count  = length(aws_subnet.starter-vpc-ec2-private-subnet) # One route table per private subnet
   vpc_id = aws_vpc.starter-vpc-ec2.id
-  tags   = merge(var.tags, { Name = "starter-vpc-ec2-private-rt" })
-  # No routes needed for private subnets, they will use the default route table
+  tags   = merge(var.tags, { Name = "starter-vpc-ec2-private-rt-${count.index + 1}" })
+
+  # Route to the NAT Gateway in the same AZ
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = element(var.nat_gateway_ids, count.index)
+  }
 }
 
 # Create route associations for the public subnets
@@ -64,5 +70,5 @@ resource "aws_route_table_association" "starter-vpc-ec2-public-rt-assoc" {
 resource "aws_route_table_association" "starter-vpc-ec2-private-rt-assoc" {
   count          = length(aws_subnet.starter-vpc-ec2-private-subnet)
   subnet_id      = aws_subnet.starter-vpc-ec2-private-subnet[count.index].id
-  route_table_id = aws_route_table.starter-vpc-ec2-private-rt.id
+  route_table_id = aws_route_table.starter-vpc-ec2-private-rt[count.index].id
 }

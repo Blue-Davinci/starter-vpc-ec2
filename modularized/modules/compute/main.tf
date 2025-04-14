@@ -30,8 +30,7 @@ resource "aws_security_group" "starter-vpc-ec2-sg" {
 }
 
 /*
-# Finally let us create an EC2 instance in the public subnet 
-# For the server, and for simplicity, we will create a simple server using user data
+# We are scaling up the EC2 to now be available in our multiple subnets
 # to install httpd and start the service with a custom html page
 # No ssh access will be allowed for now, but we will add it later
 # Meta we will use: 
@@ -42,7 +41,8 @@ resource "aws_instance" "starter-vpc-ec2-simple-web" {
   ami                    = "ami-00a929b66ed6e0de6" # Amazon Linux 2 AMI (us-east-1)
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.starter-vpc-ec2-sg.id]
-  subnet_id              = var.private_subnet_id
+  count                  = length(var.private_subnet_ids) # Create one instance per private subnet
+  subnet_id              = element(var.private_subnet_ids, count.index) # use the private subnet IDs
   key_name               = var.key_name
   user_data              = <<-EOF
                 #!/bin/bash
@@ -67,7 +67,7 @@ resource "aws_instance" "starter-vpc-ec2-simple-web" {
                     </style>
                 </head>
                 <body>
-                    <h1>Hello from Terraform!</h1>
+                    <h1>Hello from Terraform! This is EC2 number ${count.index + 1}</h1>
                     <div class="info">
                         <p><strong>Environment:</strong> ${var.tags["Environment"]}</p>
                         <p><strong>Project:</strong> ${var.tags["Project"]}</p>
@@ -82,5 +82,5 @@ resource "aws_instance" "starter-vpc-ec2-simple-web" {
                 systemctl enable httpd
                 EOF
 
-  tags = merge(var.tags, { Name = "starter-vpc-ec2-simple-web" })
+  tags = merge(var.tags, { Name = "starter-vpc-ec2-simple-web-${count.index + 1}" })
 }
