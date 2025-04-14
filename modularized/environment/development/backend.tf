@@ -1,5 +1,5 @@
 terraform {
-    backend "s3" {
+  backend "s3" {
     bucket       = "starter-vpc-ec2-terraform-state"
     key          = "terraform.tfstate"
     region       = "us-east-1"

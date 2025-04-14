@@ -17,6 +17,12 @@ variable "key_name" {
   default     = null # Set to null to disable SSH access
 }
 
+# alb sg id
+variable "alb_sg_id" {
+  description = "The security group ID of the ALB"
+  type        = string
+}
+
 # EC2 type
 variable "instance_type" {
   description = "The type of EC2 instance to launch"
@@ -24,7 +30,7 @@ variable "instance_type" {
 }
 
 # EC2 subnet
-variable "subnet_id" {
+variable "private_subnet_id" {
   description = "The ID of the subnet to launch the instance in"
   type        = string
 } 

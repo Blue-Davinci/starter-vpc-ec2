@@ -9,10 +9,9 @@ resource "aws_security_group" "starter-vpc-ec2-sg" {
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = []
     prefix_list_ids  = []
-    security_groups  = []
+    security_groups  = [var.alb_sg_id]
     self             = false # This is not a self-referencing security group
   }
   # egress for all traffic to anywhere
@@ -43,7 +42,7 @@ resource "aws_instance" "starter-vpc-ec2-simple-web" {
   ami                    = "ami-00a929b66ed6e0de6" # Amazon Linux 2 AMI (us-east-1)
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.starter-vpc-ec2-sg.id]
-  subnet_id              = var.subnet_id
+  subnet_id              = var.private_subnet_id
   key_name               = var.key_name
   user_data              = <<-EOF
                 #!/bin/bash
