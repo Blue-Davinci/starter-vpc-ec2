@@ -1,5 +1,6 @@
 # A Terraform AWS Infrastructure Sample Project
 
+**Updated Architecture**
 ![Project Architecture Diagram](images/diagram2.png)
 
 ## Table of Contents
