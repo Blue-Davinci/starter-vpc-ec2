@@ -22,7 +22,7 @@ The following will come as we grow the Tutorial Project:
 - A 3 tier application extending to an RDS instance
 - EKS/ECS usage and integration
 
-## Expected Output
+## Expected Output After Successful Setup
 ![Expected Output](/images/ec2%201.png)
 
 ![Expected Output](/images/ec2%202.png)
