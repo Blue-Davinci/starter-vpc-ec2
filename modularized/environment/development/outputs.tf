@@ -7,5 +7,10 @@ output "web_app_urls_with_ips" {
 */
 output "alb_dns_name" {
   description = "value of the ALB DNS name"
-  value = "http://${module.alb.alb_dns_name}"
+  value       = "http://${module.alb.alb_dns_name}"
+}
+
+output "asg_name" {
+  description = "The name of our ASG"
+  value       = module.compute.asg_name
 }
