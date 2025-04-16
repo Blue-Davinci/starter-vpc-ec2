@@ -25,3 +25,11 @@ variable "instance_ami" {
   type        = string
   default     = "ami-00a929b66ed6e0de6" # Amazon Linux 2 AMI (us-east-1)
 }
+
+## Create a terraform.tfvars file in the same directory as this file and add the following variables in the following format:
+# email_address = "foo@bar.xxx"
+variable "email_address" {
+  description = "value of the email address to subscribe to the SNS topic"
+  type        = string
+  sensitive = true
+}
