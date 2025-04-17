@@ -41,14 +41,31 @@ module "alb" {
 module "compute" {
   source = "../../modules/compute"
 
-  # variables
+  # VPC variables
   vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids # Use the first public subnet for the instance
+
+  # ALB variables
+  alb_sg_id          = module.alb.alb_sg_id
+  target_group_arn   = module.alb.target_group_arn
+  target_tracking_resource_label = module.alb.target_tracking_resource_label
+
+  # Instance variables
+  ami                = var.instance_ami
   instance_ami       = var.instance_ami
   instance_type      = var.instance_type
-  alb_sg_id          = module.alb.alb_sg_id
-  ami                = var.instance_ami
-  target_group_arn   = module.alb.target_group_arn
-  private_subnet_ids = module.network.private_subnet_ids # Use the first public subnet for the instance
   key_name           = null                              # Set to null to disable SSH access
   tags               = var.tags
+}
+
+# Monitoring
+module "monitoring"{
+  source = "../../modules/monitoring"
+
+  target_group_arn_suffix = module.alb.target_group_arn_suffix
+  asg_name = module.compute.asg_name
+  alb_arn_suffix     = module.alb.alb_arn_suffix
+  tags               = var.tags
+
+  email_address = var.email_address
 }
