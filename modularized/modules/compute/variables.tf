@@ -17,9 +17,21 @@ variable "key_name" {
   default     = null # Set to null to disable SSH access
 }
 
-# alb sg id
+# ALB sg id
 variable "alb_sg_id" {
   description = "The security group ID of the ALB"
+  type        = string
+}
+
+# ALB target group ARN
+variable "target_group_arn" {
+  description = "The target group ARN of the ALB"
+  type        = string
+}
+
+# target_tracking_resource_label
+variable "target_tracking_resource_label" {
+  description = "The resource label for the target tracking scaling policy"
   type        = string
 }
 
@@ -27,6 +39,12 @@ variable "alb_sg_id" {
 variable "instance_type" {
   description = "The type of EC2 instance to launch"
   type        = string
+}
+
+# instance ami
+variable "ami" {
+  description = "The AMI of our instance"
+  type = string
 }
 
 # EC2 subnet
