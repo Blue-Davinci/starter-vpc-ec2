@@ -31,5 +31,5 @@ variable "instance_ami" {
 variable "email_address" {
   description = "value of the email address to subscribe to the SNS topic"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
