@@ -33,9 +33,18 @@ resource "aws_security_group" "starter-vpc-ec2-sg" {
 # Now, we need to move to an Auto-Scaler, we will not need a fixed instance.
 # We will add the following:
 # 1. A launch template for the auto-scaler to specify the AMI, instance type, and security group.
+#    - We will also need tocreate an aws_instance-profile hooking it with our IAM role & template.
 # 2. Auto- scaler group to manage the instances, pointing to the above sg
 # 3. An random string generator to pass to our user data template
 */
+
+# Create an Instance profile (container for the IAM role) which will alloqw the EC2 instance to 
+# assume the role and perform actions on behalf of the us.
+resource "aws_iam_instance_profile" "starter-vpc-ec2-instance-profile" {
+  name = "${var.tags["Project"]}-${var.tags["Environment"]}-ec2-instance-profile-${random_string.launch_template.result}"
+  role = aws_iam_role.starter-vpc-ec2-ssm-role.name
+  tags = merge(var.tags, { Name = "starter-vpc-ec2-instance-profile" })
+}
 
 resource "aws_launch_template" "starter-vpc-ec2-lt" {
   name_prefix = "${var.tags["Environment"]}-${random_string.launch_template.result}-lt-"
@@ -48,6 +57,10 @@ resource "aws_launch_template" "starter-vpc-ec2-lt" {
     project = var.tags["Project"]
     owner = var.tags["Owner"]
   }))
+  # use the iam instance profile created above
+  iam_instance_profile {
+    name = aws_iam_instance_profile.starter-vpc-ec2-instance-profile.name
+  }
   lifecycle {
     create_before_destroy = true # create a resource before destroying an old one
   }
