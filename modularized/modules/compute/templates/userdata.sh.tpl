@@ -1,14 +1,25 @@
 #!/bin/bash
 set -e
 
+# Update system and install Apache
 yum update -y
 yum install -y httpd
 
-# Retrieve the instance ID from AWS metadata (supports IMDSv2) using 5 minute token
-# This is a workaround for the issue where the instance metadata service is not accessible
-TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 300" || true)
-INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id" || curl -s "http://169.254.169.254/latest/meta-data/instance-id")
+# Install Amazon SSM Agent (already pre-installed on Amazon Linux 2, but ensure latest version)
+yum install -y amazon-ssm-agent
 
+# Enable and start the SSM Agent
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
+
+# Retrieve the instance ID from AWS metadata using IMDSv2 (fallback to IMDSv1)
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 300" || true)
+INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  "http://169.254.169.254/latest/meta-data/instance-id" || \
+  curl -s "http://169.254.169.254/latest/meta-data/instance-id")
+
+# Generate index.html for Apache
 cat > /var/www/html/index.html <<EOT
 <!DOCTYPE html>
 <html lang="en">
@@ -32,5 +43,6 @@ cat > /var/www/html/index.html <<EOT
 </html>
 EOT
 
+# Start and enable Apache
 systemctl start httpd
 systemctl enable httpd
