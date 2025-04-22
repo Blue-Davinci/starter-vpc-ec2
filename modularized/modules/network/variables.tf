@@ -29,5 +29,5 @@ variable "aws_availability_zones" {
 # NAT Gateway IDs
 variable "nat_gateway_ids" {
   description = "The IDs of the NAT Gateways to use for the private subnets"
-  type        = list(string)
+  type        = string
 }

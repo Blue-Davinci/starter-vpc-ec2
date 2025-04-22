@@ -55,7 +55,7 @@ resource "aws_route_table" "starter-vpc-ec2-private-rt" {
   # Route to the NAT Gateway in the same AZ
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(var.nat_gateway_ids, count.index)
+    nat_gateway_id = var.nat_gateway_ids
   }
 }
 
