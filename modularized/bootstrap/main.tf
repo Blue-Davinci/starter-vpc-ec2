@@ -52,5 +52,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state_lifecycle" {
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7 # Abort incomplete uploads after 7 days
+    }
+    
   }
 }

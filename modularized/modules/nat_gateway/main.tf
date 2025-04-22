@@ -10,16 +10,19 @@ Resources we will create:
 # Create an EIP in each public subnet for the NAT Gateway
 resource "aws_eip" "starter-vpc-ec2-nat-eip" {
     # Removed deprecated 'vpc' argument as it is no longer required
-    count = length(var.public_subnet_ids) # Create one EIP per public subnet
+    # count = 1 # Create one EIP per
     tags = merge(var.tags, { Name = "starter-vpc-ec2-nat-eip" })
 }
 
 # Create a NAT Gateway in each public subnet
 resource "aws_nat_gateway" "starter-vpc-ec2-nat-gateway" {
-    # get the count of the public subnets
+    /*
     count         = length(var.public_subnet_ids)
     allocation_id = aws_eip.starter-vpc-ec2-nat-eip[count.index].id # Use the EIP created above
     subnet_id     = element(var.public_subnet_ids, count.index) # Use the public subnet ID
-    tags          = merge(var.tags, { Name = "starter-vpc-ec2-nat-gateway-${count.index + 1}" })
+    */
+    allocation_id = aws_eip.starter-vpc-ec2-nat-eip.id # Use the EIP created above
+    subnet_id     = var.public_subnet_ids[0] # Use the first public subnet ID
+    tags          = merge(var.tags, { Name = "starter-vpc-ec2-nat-gateway-main" })
 }
 
