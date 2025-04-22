@@ -23,3 +23,9 @@ resource "aws_iam_role_policy_attachment" "ssm-ec2-attach" {
   role       = aws_iam_role.starter-vpc-ec2-ssm-role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
+# Attach the CloudWatch Agent policy to enable logging to CloudWatch
+resource "aws_iam_role_policy_attachment" "cloudwatch-agent-attach" {
+  role       = aws_iam_role.starter-vpc-ec2-ssm-role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}

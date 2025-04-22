@@ -7,14 +7,15 @@ We will create the following resources:
 4. A security group for the ALB that will allow incoming traffic on port 80 from the internet.
 */
 
+# Recieves forwarded traffic from the listener and routes it to the EC2 instances on port 8080
 resource "aws_lb_target_group" "starter-vpc-ec2-tg" {
   name     = "${var.alb_name}-tg"
-  port     = 80
+  port     = 8080
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 
   health_check {
-    path                = "/" # Health check path for the target group
+    path                = "/login" # Health check path for the target group
     protocol            = "HTTP"
     matcher             = "200-299" # Accept 2xx responses as healthy
     interval            = 30
@@ -35,7 +36,7 @@ resource "aws_lb_target_group" "starter-vpc-ec2-tg" {
 # we should have an association here, but this will cause a chicken and egg problem
 # so we will create the association in the main.tf file of the root module
 
-# ALB security group
+# ALB security group to allow incoming traffic on port 80 from the internet
 resource "aws_security_group" "starter-vpc-ec2-alb-sg" {
     name = "${var.alb_name}-sg"
     description = "Allow HTTP inbound traffic"
@@ -88,7 +89,7 @@ resource "aws_lb" "starter-vpc-ec2-alb" {
   
 }
 
-# Create the ALB listener
+# Create the ALB listener to listen for incoming traffic on port 80 and route it to the target group
 resource "aws_lb_listener" "starter-vpc-ec2-alb-listener" {
     load_balancer_arn = aws_lb.starter-vpc-ec2-alb.arn
     port = 80
