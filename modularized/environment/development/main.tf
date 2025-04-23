@@ -9,6 +9,7 @@ module "nat_gateway" {
   # variables
   public_subnet_ids  = module.network.public_subnet_ids
   private_subnet_ids = module.network.private_subnet_ids
+  use_single_nat_gateway = var.use_single_nat_gateway # Set to true to use a single NAT Gateway for all private subnets
   tags               = var.tags
 }
 
@@ -23,6 +24,7 @@ module "network" {
   aws_private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
   aws_availability_zones   = ["us-east-1a", "us-east-1b"]
   nat_gateway_ids          = module.nat_gateway.nat_gateway_ids
+  use_single_nat_gateway = var.use_single_nat_gateway # Set to true to use a single NAT Gateway for all private subnets
 }
 
 # ALB 

@@ -5,6 +5,29 @@ output "web_app_urls_with_ips" {
   value       = module.compute.web_app_urls_with_ips
 }
 */
+
+# Output some settings like region, use_single_nat_gateway, instance type, and instance ami
+output "region" {
+  description = "The AWS region we are using"
+  value       = var.provider_region
+}
+
+output "use_single_nat_gateway" {
+  description = "Whether we are using a single NAT Gateway or not"
+  value       = var.use_single_nat_gateway 
+}
+
+output "instance_type" {
+  description = "The type of EC2 instance we are using"
+  value       = var.instance_type
+}
+
+output "name_of_instance_ami" {
+  description = "The AMI ID we are using"
+  value       = var.instance_ami
+  
+}
+
 output "alb_dns_name" {
   description = "value of the ALB DNS name"
   value       = "http://${module.alb.alb_dns_name}"
