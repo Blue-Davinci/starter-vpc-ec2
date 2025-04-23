@@ -57,7 +57,7 @@ resource "aws_route_table" "starter-vpc-ec2-private-rt" {
   route {
     cidr_block     = "0.0.0.0/0"
     # if single nat gateway bool is yes, then use the first nat gateway id otherwise use the nat gateway id for the current index
-    nat_gateway_id = var.use_single_nat_gateway ? aws_nat_gateway.starter-vpc-ec2-nat-gateway[0].id : aws_nat_gateway.starter-vpc-ec2-nat-gateway[count.index].id
+    nat_gateway_id = var.use_single_nat_gateway ? var.nat_gateway_ids[0] :var.nat_gateway_ids[count.index]
   }
 }
 
@@ -65,7 +65,7 @@ resource "aws_route_table" "starter-vpc-ec2-private-rt" {
 resource "aws_route_table_association" "starter-vpc-ec2-public-rt-assoc" {
   count          = length(aws_subnet.starter-vpc-ec2-public-subnet)
   subnet_id      = aws_subnet.starter-vpc-ec2-public-subnet[count.index].id
-  route_table_id = aws_route_table.starter-vpc-ec2-private-rt[count.index].id
+  route_table_id = aws_route_table.starter-vpc-ec2-public-rt.id
 }
 
 # Create route associations for the private subnets

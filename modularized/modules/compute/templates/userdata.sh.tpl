@@ -30,6 +30,13 @@ systemctl enable jenkins
 systemctl start jenkins
 
 # ----------------------------
+# Install and Configure SSM Agent
+# ----------------------------
+dnf install -y amazon-ssm-agent
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
+
+# ----------------------------
 # Get EC2 Instance ID (IMDSv2 Safe)
 # ----------------------------
 TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 300" || true)
@@ -67,6 +74,7 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json <<CWCONF
   }
 }
 CWCONFIG
+
 
 # ----------------------------
 # Start and Enable CloudWatch Agent

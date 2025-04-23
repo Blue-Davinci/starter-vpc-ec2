@@ -16,9 +16,9 @@ resource "aws_eip" "starter-vpc-ec2-nat-eip" {
 
 # Create a NAT Gateway in each public subnet
 resource "aws_nat_gateway" "starter-vpc-ec2-nat-gateway" {
-    count         = length(var.public_subnet_ids)
-    allocation_id = aws_eip.starter-vpc-ec2-nat-eip.id # Use the EIP created above
-    subnet_id     = var.use_single_nat_gateway ? aws_subnet.starter-vpc-ec2-public-subnet[0].id : aws_subnet.starter-vpc-ec2-public-subnet[count.index].id
+    count         = var.use_single_nat_gateway ? 1 : length(var.public_subnet_ids) # if using a single NAT Gateway, create one, otherwise create one for each public subnet
+    allocation_id = aws_eip.starter-vpc-ec2-nat-eip[count.index].id # Ensure each NAT Gateway gets a unique EIP
+    subnet_id     = var.use_single_nat_gateway ? var.public_subnet_ids[0]: var.public_subnet_ids[count.index]
     tags          = merge(var.tags, { Name = "starter-vpc-ec2-nat-gateway-main-${count.index + 1}" })
 }
 
