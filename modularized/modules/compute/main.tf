@@ -3,7 +3,7 @@ resource "aws_security_group" "starter-vpc-ec2-sg" {
   name        = "starter-vpc-ec2-sg"
   description = "Security group for the EC2 instance allowing only http"
   vpc_id      = var.vpc_id
-  # ingress for port 80 (http) from anywhere
+  # ingress for port 8080 (forwarded) from ALB
   ingress {
     description      = "Allow HTTP traffic on port 80"
     from_port        = 8080
