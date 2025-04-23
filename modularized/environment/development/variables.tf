@@ -33,3 +33,10 @@ variable "email_address" {
   type        = string
   sensitive   = true
 }
+
+# Whether to use a single NAT Gateway or multiple NAT Gateways for high availability
+variable "use_single_nat_gateway" {
+  description = "Whether to use a single NAT Gateway or multiple NAT Gateways for high availability."
+  type        = bool
+  default = true
+}
