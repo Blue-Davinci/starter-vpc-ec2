@@ -9,6 +9,7 @@ module "nat_gateway" {
   # variables
   public_subnet_ids  = module.network.public_subnet_ids
   private_subnet_ids = module.network.private_subnet_ids
+  use_single_nat_gateway = var.use_single_nat_gateway # Set to true to use a single NAT Gateway for all private subnets
   tags               = var.tags
 }
 
@@ -23,6 +24,7 @@ module "network" {
   aws_private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
   aws_availability_zones   = ["us-east-1a", "us-east-1b"]
   nat_gateway_ids          = module.nat_gateway.nat_gateway_ids
+  use_single_nat_gateway = var.use_single_nat_gateway # Set to true to use a single NAT Gateway for all private subnets
 }
 
 # ALB 
@@ -46,26 +48,27 @@ module "compute" {
   private_subnet_ids = module.network.private_subnet_ids # Use the first public subnet for the instance
 
   # ALB variables
-  alb_sg_id          = module.alb.alb_sg_id
-  target_group_arn   = module.alb.target_group_arn
+  alb_sg_id                      = module.alb.alb_sg_id
+  target_group_arn               = module.alb.target_group_arn
   target_tracking_resource_label = module.alb.target_tracking_resource_label
 
   # Instance variables
-  ami                = var.instance_ami
-  instance_ami       = var.instance_ami
-  instance_type      = var.instance_type
-  key_name           = null                              # Set to null to disable SSH access
-  tags               = var.tags
+  ami           = var.instance_ami
+  instance_ami  = var.instance_ami
+  instance_type = var.instance_type
+  key_name      = null # Set to null to disable SSH access
+  tags          = var.tags
 }
 
 # Monitoring
-module "monitoring"{
+module "monitoring" {
   source = "../../modules/monitoring"
 
   target_group_arn_suffix = module.alb.target_group_arn_suffix
-  asg_name = module.compute.asg_name
-  alb_arn_suffix     = module.alb.alb_arn_suffix
-  tags               = var.tags
+  asg_name                = module.compute.asg_name
+  alb_arn_suffix          = module.alb.alb_arn_suffix
+  tags                    = var.tags
+  aws_region              = var.provider_region
 
   email_address = var.email_address
 }

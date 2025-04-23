@@ -70,3 +70,91 @@ resource "aws_sns_topic_subscription" "alarm_email_subscription" {
     # You can also use "lambda" or "sqs" as the protocol if you want to send the alarm notifications to a Lambda function or SQS queue
     # respectively. Https and application are examples of other endpoints.
 }
+
+
+# ================== Dashboard ===============================================
+
+resource "aws_cloudwatch_dashboard" "apache_asg_dashboard" {
+  dashboard_name = "${var.tags["Project"]}-${var.tags["Environment"]}-dashboard"
+
+  dashboard_body = jsonencode({
+    widgets = [
+      # ========== Average CPU Utilization for ASG ==========
+      {
+        type   = "metric",
+        x      = 0,
+        y      = 0,
+        width  = 12,
+        height = 6,
+        properties = {
+          view    = "timeSeries",
+          region  = var.aws_region,
+          title   = "ASG Average CPU Utilization",
+          metrics = [
+            ["AWS/EC2", "CPUUtilization", "AutoScalingGroupName", var.asg_name]
+          ],
+          stat   = "Average",
+          period = 300
+        }
+      },
+
+      # ========== Apache Access Log Count ==========
+      {
+        type   = "log",
+        x      = 0,
+        y      = 6,
+        width  = 12,
+        height = 6,
+        properties = {
+          query  = <<EOT
+SOURCE '/ec2/${var.tags["Environment"]}/apache-logs'
+| fields @timestamp, @message
+| filter @logStream like /access/
+| stats count() as requests by bin(5m)
+EOT
+          region = var.aws_region,
+          title  = "Apache Access Logs - Request Count (5m)"
+        }
+      },
+
+      # ========== Apache Error Log Summary ==========
+      {
+        type   = "log",
+        x      = 12,
+        y      = 6,
+        width  = 12,
+        height = 6,
+        properties = {
+          query  = <<EOT
+SOURCE '/ec2/${var.tags["Environment"]}/apache-logs'
+| fields @timestamp, @message
+| filter @logStream like /error/
+| sort @timestamp desc
+| limit 20
+EOT
+          region = var.aws_region,
+          title  = "Apache Error Logs - Last 20 Entries"
+        }
+      },
+
+      # ========== CloudInit Boot Logs ==========
+      {
+        type   = "log",
+        x      = 0,
+        y      = 12,
+        width  = 24,
+        height = 6,
+        properties = {
+          query  = <<EOT
+SOURCE '/ec2/${var.tags["Environment"]}/cloudinit-logs'
+| fields @timestamp, @message
+| sort @timestamp desc
+| limit 10
+EOT
+          region = var.aws_region,
+          title  = "CloudInit Logs - Recent Boot Events"
+        }
+      }
+    ]
+  })
+}

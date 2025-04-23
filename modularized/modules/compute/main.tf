@@ -3,11 +3,11 @@ resource "aws_security_group" "starter-vpc-ec2-sg" {
   name        = "starter-vpc-ec2-sg"
   description = "Security group for the EC2 instance allowing only http"
   vpc_id      = var.vpc_id
-  # ingress for port 80 (http) from anywhere
+  # ingress for port 8080 (forwarded) from ALB
   ingress {
     description      = "Allow HTTP traffic on port 80"
-    from_port        = 80
-    to_port          = 80
+    from_port        = 8080
+    to_port          = 8080
     protocol         = "tcp"
     ipv6_cidr_blocks = []
     prefix_list_ids  = []
@@ -46,6 +46,8 @@ resource "aws_iam_instance_profile" "starter-vpc-ec2-instance-profile" {
   tags = merge(var.tags, { Name = "starter-vpc-ec2-instance-profile" })
 }
 
+# Create a launch template for the EC2 instance to be used by the ASG
+# The launch template will specify the AMI, instance type, and security group.
 resource "aws_launch_template" "starter-vpc-ec2-lt" {
   name_prefix = "${var.tags["Environment"]}-${random_string.launch_template.result}-lt-"
   image_id = var.ami
@@ -68,6 +70,21 @@ resource "aws_launch_template" "starter-vpc-ec2-lt" {
     resource_type = "instance"
     tags = merge(var.tags, { Name = "starter-vpc-ec2-simple-web-${random_string.launch_template.result}" })
   }
+}
+
+# For monitoring, we will also create the log groups here as they are needed by the monitoring module
+# Create the first group for apache logs which we will use to pipe access and error logs to
+resource "aws_cloudwatch_log_group" "jenkins_logs" {
+  name = "/ec2/${ var.tags["Environment"]}/jenkins-logs"
+  retention_in_days = 1 # Set the retention period for the logs, we will just use 1 day for now
+  tags = merge(var.tags, { Name = "apache-logs" })
+}
+
+# Create group to pipe cloud init logs to
+resource "aws_cloudwatch_log_group" "cloudinit_logs" {
+  name = "/ec2/${ var.tags["Environment"]}/cloudinit-logs"
+  retention_in_days = 1 # Set the retention period for the logs, we will just use 1 day for now
+  tags = merge(var.tags, { Name = "cloudinit-logs" })
 }
 
 

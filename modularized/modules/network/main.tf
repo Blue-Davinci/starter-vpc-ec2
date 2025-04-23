@@ -51,11 +51,13 @@ resource "aws_route_table" "starter-vpc-ec2-private-rt" {
   count  = length(aws_subnet.starter-vpc-ec2-private-subnet) # One route table per private subnet
   vpc_id = aws_vpc.starter-vpc-ec2.id
   tags   = merge(var.tags, { Name = "starter-vpc-ec2-private-rt-${count.index + 1}" })
+  
 
   # Route to the NAT Gateway in the same AZ
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(var.nat_gateway_ids, count.index)
+    # if single nat gateway bool is yes, then use the first nat gateway id otherwise use the nat gateway id for the current index
+    nat_gateway_id = var.use_single_nat_gateway ? var.nat_gateway_ids[0] :var.nat_gateway_ids[count.index]
   }
 }
 

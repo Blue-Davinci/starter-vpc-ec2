@@ -31,5 +31,12 @@ variable "instance_ami" {
 variable "email_address" {
   description = "value of the email address to subscribe to the SNS topic"
   type        = string
-  sensitive = true
+  sensitive   = true
+}
+
+# Whether to use a single NAT Gateway or multiple NAT Gateways for high availability
+variable "use_single_nat_gateway" {
+  description = "Whether to use a single NAT Gateway or multiple NAT Gateways for high availability."
+  type        = bool
+  default = true
 }

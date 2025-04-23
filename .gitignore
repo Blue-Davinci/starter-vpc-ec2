@@ -24,3 +24,6 @@ override.tf.json
 # .terraformrc and CLI configuration
 .terraformrc
 terraform.rc
+
+# json files
+*.json

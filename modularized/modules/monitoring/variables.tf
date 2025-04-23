@@ -28,3 +28,9 @@ variable "email_address" {
   type        = string
   sensitive   = true
 }
+
+# provider region
+variable "aws_region" {
+  description = "The AWS region to deploy the resources in"
+  type        = string
+}

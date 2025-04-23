@@ -31,3 +31,9 @@ variable "nat_gateway_ids" {
   description = "The IDs of the NAT Gateways to use for the private subnets"
   type        = list(string)
 }
+
+# Whether to use a single NAT Gateway or multiple NAT Gateways for high availability
+variable "use_single_nat_gateway" {
+  description = "Whether to use a single NAT Gateway or multiple NAT Gateways for high availability."
+  type        = bool
+}

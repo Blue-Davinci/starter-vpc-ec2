@@ -15,3 +15,9 @@ variable "private_subnet_ids" {
   description = "A list of the private subnet IDs to launch the instance in"
   type        = list(string)
 }
+
+# Whether to use a single NAT Gateway or multiple NAT Gateways for high availability
+variable "use_single_nat_gateway" {
+  description = "Whether to use a single NAT Gateway or multiple NAT Gateways for high availability."
+  type        = bool
+}
